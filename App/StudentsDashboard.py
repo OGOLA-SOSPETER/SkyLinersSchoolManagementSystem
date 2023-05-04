@@ -6,41 +6,39 @@ from datetime import date
 
 class StudentsDashboardPage:
     def __init__(self):
+        self.welcomemaster = None
         self.root = tk.Tk()
         self.root.title("Student Dashboard")
         self.master = tk.Tk()
 
 
     def StudentDashBoard(self):
-        self.root.geometry("700x400+210+100")
+        self.root.geometry("550x250+210+100")
         self.root.deiconify()
-        self.root.config(padx=80)
+        self.root.config(padx=100,pady=50)
         # self.root.config(bg="#06283D")
 
-        label1 = tk.Label(self.root, text="Welcome to the student dashboard.")
-        label1.grid(row=0, column=0, columnspan=3)
-
-        label2 = tk.Label(self.root, text="Kindly LOGIN.")
-        label2.grid(row=1, column=0, columnspan=2)
-
-        root_frame = tk.LabelFrame(self.root, text="Login Details.",fg="#06283D")
-        root_frame.grid(row=3, column=1, padx=130, pady=20,sticky=tk.W+tk.E)
+        label1 = tk.Label(self.root, text="Welcome to the student dashboard.",font='Arial, 10')
+        label1.grid(row=0, column=1, columnspan=3)
 
         # UserName Entry.
-        UsernameLabel = tk.Label(root_frame, text="UserName", bg="#EDEDED", fg="#06283D")
-        UsernameLabel.grid(row=0, column=0)
-        self.UsernameEntry = Entry(root_frame, width=30)
-        self.UsernameEntry.grid(row=0, column=1, padx=10)
+        UsernameLabel = tk.Label(self.root, text="UserName", bg="#EDEDED", fg="#06283D")
+        UsernameLabel.grid(row=2, column=1)
+        self.UsernameEntry = Entry(self.root, width=30)
+        self.UsernameEntry.grid(row=2, column=2, padx=10)
 
         # Password Entry.
-        PasswordLabel = tk.Label(root_frame, text="Password", bg="#EDEDED", fg="#06283D")
-        PasswordLabel.grid(row=1, column=0)
-        self.PasswordEntry = Entry(root_frame, width=30, show="*")
-        self.PasswordEntry.grid(row=1, column=1, padx=10)
+        PasswordLabel = tk.Label(self.root, text="Password", bg="#EDEDED", fg="#06283D")
+        PasswordLabel.grid(row=3, column=1)
+        self.PasswordEntry = Entry(self.root, width=30, show="*")
+        self.PasswordEntry.grid(row=3, column=2, padx=10)
 
         # Login Button
-        LoginButton = Button(root_frame, text="Login", bg="#06283D", fg="white", command=self.ValidateUser,justify=CENTER)
-        LoginButton.grid(row=4, column=1,sticky=tk.W+tk.E,columnspan=1,padx=25)
+        LoginButton = Button(self.root, text="Login", bg="blue", fg="white",width=20, command=self.ValidateUser,justify=CENTER)
+        LoginButton.grid(row=5, column=1,sticky=tk.W+tk.E,columnspan=2,padx=75,pady=20)
+
+        ExitButton = Button(self.root, text="Exit", bg="blue", fg="white",width=20, command=self.ExitStudent)
+        ExitButton.grid(row=6, column=1, sticky=tk.W+tk.E,columnspan=2,padx=75,pady=1)
 
         # RegisterLabel = tk.Label(self.root, text="If Not Registered, kindly proceed to register here.")
         # RegisterLabel.grid(row=5, column=0, columnspan=2)
@@ -50,13 +48,17 @@ class StudentsDashboardPage:
 
         self.root.mainloop()
 
+    def ExitStudent(self):
+        self.root.withdraw()
+        # self.welcomemaster.deiconify()
+
     def ValidateUser(self):
         username = self.UsernameEntry.get()
         password = self.PasswordEntry.get()
 
         errorcount = 0
         if username != "" and password != "":
-            conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\SchoolUsers.accdb;')
+            conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\StudentData.accdb;')
             cursor = conn.cursor()
 
             # Fetching the password for the given username
@@ -111,11 +113,9 @@ class StudentsDashboardPage:
         dateEntry = Entry(frame,textvariable=Date,width=13,font="ariel 13 ")
         dateEntry.grid(row=0,column=3,padx=25)
 
-
-
-
         detailsLabel = LabelFrame(frame,text="Student Info")
         detailsLabel.grid(row=1,column=1,padx=25)
+
         Reg_label = Label(detailsLabel, text="Reg_Number")
         Reg_label.grid(row=3, column=0)
         self.Reg_Entry = Entry(detailsLabel, width=10)
@@ -214,14 +214,11 @@ class StudentsDashboardPage:
         DisplayButton = Button(buttonsFrame, text="DisplayRecords",width=15, command=self.DisplayScores)
         DisplayButton.grid(row=1, column=0)
 
-        UpdateButton = Button(buttonsFrame, text="Update DataBase",width=15, command=self.UpdateRecords)
-        UpdateButton.grid(row=2, column=0)
-
         ClearButton = Button(buttonsFrame,text="Clear",width=15, command=self.ClearFields)
-        ClearButton.grid(row=3,column=0)
+        ClearButton.grid(row=2,column=0)
 
         ExitButton = Button(buttonsFrame, text="Exit",width=15, command=self.Close)
-        ExitButton.grid(row=4, column=0)
+        ExitButton.grid(row=3, column=0)
 
 
         self.master.mainloop()
@@ -230,7 +227,7 @@ class StudentsDashboardPage:
         try:
             self.reg = self.Reg_Entry.get()
             # establish database connection
-            conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\ExamRecords.accdb;')
+            conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\ExamRecords.accdb;')
             cursor = conn.cursor()
 
             # retrieve subject scores for given registration number
@@ -317,110 +314,10 @@ class StudentsDashboardPage:
         self.root.deiconify()
         # exit()
 
-    def UpdateRecords(self):
-        self.reg = self.Reg_Entry.get()
-        self.math = int(self.Maths_Entry.get())
-        self.eng = int(self.English_Entry.get())
-        self.kis = int(self.Kiswahili_Entry.get())
-        self.bio = int(self.Biology_Entry.get())
-        self.chem = int(self.Chemistry_Entry.get())
-        self.phy = int(self.Physics_Entry.get())
-        self.geo = int(self.Geography_Entry.get())
-        self.hist = int(self.History_Entry.get())
-        self.cr = int(self.CRE_Entry.get())
-        self.comp = int(self.Computer_Entry.get())
-        self.tot = int(self.Total_Entry.get())
-        self.av = float(self.Average_Entry.get())
-        self.grd = self.Grade_Entry.get()
 
-        self.tot = self.math + self.eng + self.kis + self.chem + self.bio + self.phy + self.geo + self.hist + self.cr + self.comp
-        self.av = (self.math + self.eng + self.kis + self.chem + self.bio + self.phy + self.geo + self.hist + self.cr + self.comp)/10
-
-        if 80 <= self.av <= 100:
-            self.Grade = ' A '
-            self.comment = "Excellent Performance"
-
-        elif 60 <= self.av <= 79:
-            self.Grade = ' B '
-            self.comment = " A Good Performance "
-
-        elif 50 <= self.av <= 59:
-            self.Grade = ' C '
-            self.comment = "Put in more effort"
-
-        elif 40 <= self.av <= 49:
-            self.Grade = ' D '
-            self.comment = " Poor "
-
-        else:
-            self.Grade = ' E '
-            self.comment = "Below Average. You Fail"
-        # conn = pyodbc.connect(
-        #     r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\ExamRecords.accdb;')
-        # cursor = conn.cursor()
-        #
-        # # Fetching the password for the given username
-        # cursor.execute(f"select * from ExamRecords WHERE REG_NO = '{self.reg}'")
-        # fetched_data = cursor.fetchall()
-        # # messagebox.showinfo("Data", f"{self.reg}, {self.math}, {self.eng}")
-        #
-        # if self.reg in fetched_data and self.math != "" and self.eng !="" and self.kis != "" and self.bio != "":
-        #     update_query = f"UPDATE ExamRecords SET MATHS = '{self.math}', ENGLISH = '{self.eng}', KISWAHILI = '{self.kis}', BIOLOGY = '{self.bio}', CHEMISTRY = '{self.chem}', TOTAL ='{self.tot}', AVERAGE = '{self.av}' WHERE REG_NO = '{self.reg}'"
-        #
-        #     results = cursor.execute(update_query)
-        #
-        #     if results:
-        #         messagebox.showinfo("Update Success.","Records updated successfully.")
-        #     else:
-        #         messagebox.showerror("Update Failure", "Update Failed.")
-        #
-        # else:
-        #     messagebox.showerror("Null Fields", "Fields cannot be empty!!")
-
-        conn = pyodbc.connect(
-            r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\ExamRecords.accdb;')
-        cursor = conn.cursor()
-
-        # Fetching the password for the given username
-        cursor.execute(f"select * from ExamRecords WHERE REG_NO = '{self.reg}'")
-        fetched_data = cursor.fetchone()
-
-        if fetched_data:
-            reg, math, eng, kis, bio, hist, chem, phy, geog, cre, comp, tot, av, grd = fetched_data
-            if self.math and self.eng and self.kis and self.bio:
-                # f"UPDATE ExamRecords SET MATHS = '{self.math}', ENGLISH = '{self.eng}', KISWAHILI = '{self.kis}', BIOLOGY = '{self.bio}', CHEMISTRY = '{self.chem}', TOTAL ='{self.tot}', AVERAGE = '{self.av}' WHERE REG_NO = '{self.reg}'"
-                response = messagebox.askyesno("Update Records.", f"Do you want to update the records for {self.reg} ?")
-                if response:
-                    results = cursor.execute(
-                        "UPDATE ExamRecords SET MATHS = ?, ENGLISH = ?, KISWAHILI = ?, BIOLOGY = ?, CHEMISTRY = ?, PHYSICS = ?, GEOGRAPHY = ?, HISTORY = ?, CRE = ?, COMPUTER_STUDIES = ?, TOTAL = ?, AVERAGE = ?, GRADE = ? WHERE REG_NO = ?",
-                        self.math, self.eng, self.kis, self.bio, self.chem, self.phy, self.geo, self.hist, self.cr,
-                        self.comp, self.tot, self.av, self.Grade, self.reg)
-
-                    if results:
-                        messagebox.showinfo("Update Success.", "Records updated successfully.")
-                    else:
-                        messagebox.showerror("Update Failure", "Update Failed.")
-                else:
-                    messagebox.showwarning("Cancel Update.","Update Cancelled.")
-            else:
-                messagebox.showerror("Null Fields", "Fields cannot be empty!!")
-        else:
-            messagebox.showerror("Invalid Registration Number", "No data found for the given Registration Number!")
-        conn.commit()
+    def launch_student_window(self):
+        stud = StudentsDashboardPage()
+        stud.StudentDashBoard()
 
 
-
-
-
-
-
-
-
-
-
-
-
-stud = StudentsDashboardPage()
-
-stud.StudentDashBoard()
 
