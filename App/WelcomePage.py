@@ -66,14 +66,14 @@ class WelcomePage:
             messagebox.showerror("Multiple Selection!","Choose Only One Option!!!")
         elif self.student_var.get():
             self.welcomemaster.withdraw()
-            StudentsDashboardPage.StudentDashBoard(StudentsDashboardPage())
+            StudentsDashboardPage.launch_student_window(StudentsDashboardPage().StudentDashBoard())
         elif self.admin_var.get():
             self.welcomemaster.withdraw()
             AdminDashboardPage.launch_admin_window(AdminDashboardPage())
             self.welcomemaster.withdraw()
         elif self.teacher_var.get():
             self.welcomemaster.withdraw()
-            TeacherDashboardPage.launch_teacher_window(TeacherDashboardPage())
+            TeacherDashboardPage.launch_teacher_window(TeacherDashboardPage().TeacherLogin())
             messagebox.showerror("Coming soon!","Teacher Coming soon.!")
         else:
             messagebox.showerror("Error", "Please select your Login Option")

@@ -1,6 +1,5 @@
-import ViewEditStudent
+from App import ViewEditStudent
 import re
-import sys
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
@@ -10,21 +9,20 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from tkinter.ttk import Combobox
 from tkinter import messagebox
-import random
+from Models import ReusableMethods
+
 # from ViewEditStudent import viewstud
 
 class AdminDashboardPage:
 
-    def __init__(self):
+    # def __init__(self):
+    #
+    #
+    def AdminLogin(self):
         self.root = tk.Tk()
         self.root.title("Administrator")
-        self.master = tk.Tk()
-
-    def AdminLogin(self):
         self.root.geometry("600x300+200+100")
         self.root.config(padx=150,pady=20)
-
-
 
         label1 = tk.Label(self.root, text="Welcome to the Administrator dashboard.")
         label1.grid(row=0, column=0, columnspan=2)
@@ -101,6 +99,7 @@ class AdminDashboardPage:
 
         return self.username
     def AdminDashboard(self):
+        self.master = Toplevel(self.root)
         self.master.geometry("600x400+200+100")
         self.master.config(padx=50,pady=50)
 
@@ -109,9 +108,8 @@ class AdminDashboardPage:
         # Welcome Label
         WelcomeLabel = tk.Label(self.master, text="Welcome, Administrator, " + self.username)
         WelcomeLabel.grid(row=0, column=0, columnspan=4)
-        self.viewst = ViewEditStudent.ViewStudentDetails()
         # View Students Button
-        ViewStudentsButton = tk.Button(self.master, text="View Students", bg="blue",width = 20, fg="white", command=self.viewst.ViewStudent)
+        ViewStudentsButton = tk.Button(self.master, text="View Students", bg="blue",width = 20, fg="white", command=self.ViewStudent)
         ViewStudentsButton.grid(row=1, column=0, padx=10,pady=10)
 
         # Add Student Button
@@ -131,74 +129,56 @@ class AdminDashboardPage:
         ViewReportsButton.grid(row=2, column=1, padx=10, pady=10)
 
         # Add Class Button
-        ViewParentsButton = tk.Button(self.master, text="Parents Information", bg="green",width = 20, fg="white", command=self.AddClass)
+        ViewParentsButton = tk.Button(self.master, text="Parents Information", bg="green",width = 20, fg="white", command=self.ViewParentInfo)
         ViewParentsButton.grid(row=2, column=2, padx=10, pady=10)
 
+        # View  Class Button
+        ViewClassButton = tk.Button(self.master, text="Class Details", bg="blue", width=20, fg="white", command=self.ViewClassInfo)
+        ViewClassButton.grid(row=3, column=0, padx=10, pady=10)
 
-        #Send Mail
-        SendMailButton = tk.Button(self.master, text="Send Mail", bg="green", fg="white", command=self.SendMail)
-        SendMailButton.grid(row=3, column=1, pady=10)
+        # Add Class Button
+        ViewArrearsButton = tk.Button(self.master, text="View Fee Arrears", bg="green", width=20, fg="white",command=self.ViewArrearsInfo)
+        ViewArrearsButton.grid(row=3, column=1, padx=10, pady=10)
+        # #Send Mail
+        # SendMailButton = tk.Button(self.master, text="Send Mail", bg="green", fg="white", command=self.SendMail)
+        # SendMailButton.grid(row=3, column=1, pady=10)
 
         # Send Mail
         HomeButton = tk.Button(self.master, text="Exit",width = 20, command=self.Home)
         HomeButton.grid(row=3, column=2, pady=10)
 
+    def ViewClassInfo(self):
+        atitle = 'Class Information'
+        aquery = 'SELECT REG_NO, NAME, STREAM, FORM FROM StudentData'
+        ReusableMethods.StudentInfo(self,atitle,aquery)
+
+    def ViewArrearsInfo(self):
+        atitle = 'Fee Payment and Arrears Info.'
+        aquery = 'SELECT REG_NO, NAME, STREAM, FORM, FEES_PAID, FEES_BALANCE, FATHER_EMAIL, FATHER_CONTACT FROM StudentData'
+        ReusableMethods.StudentInfo(self,atitle,aquery)
+
+    def ViewParentInfo(self):
+        atitle = 'Parents\' Information'
+        aquery = 'SELECT REG_NO,STREAM, FORM, FATHER_ID, FATHER_NAME, FATHER_CONTACT, FATHER_EMAIL, MOTHER_ID, MOTHER_NAME ,MOTHER_CONTACT,MOTHER_EMAIL FROM StudentData'
+        ReusableMethods.StudentInfo(self, atitle, aquery)
+    def ViewStudent(self):
+        viewst = ViewEditStudent.ViewStudentDetails()
+        viewst.ViewStudent()
+        # self.viewst = ViewEditStudent.ViewStudentDetails()
+
+    def ViewTeachers(self):
+        atitle = 'Teachers Information'
+        aquery = 'SELECT EMP_NO, NAME, AGE, COUNTY,STREAM_T, FORM_T, SUBJECT_T FROM TeachersData'
+        ReusableMethods.StudentInfo(self, atitle, aquery)
 
     def Home(self):
         self.master.withdraw()
         self.root.deiconify()
-    def SendMail(self):
-        messagebox.askquestion("Valid","Want to send report?")
-        # Get the registration number from the entry field
-        reg = self.Reg_Entry.get()
-
-        # Connect to the database and retrieve the student's record and exam results
-        conn = pyodbc.connect(
-            r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\StudentData.accdb;')
-        cursor = conn.cursor()
-        cursor.execute(f"SELECT * FROM StudentData WHERE REG_NO = '{reg}'")
-        record = cursor.fetchall()
-
-        conn1 = pyodbc.connect(
-            r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\ExamRecords.accdb;')
-        cursor = conn1.cursor()
-        cursor.execute(f"SELECT MATHS FROM ExamRecords WHERE REG_NO = '{reg}'")
-        data = cursor.fetchone()
-
-        # Set up the email sender and recipient
-        sender = 'ogolasospeter62@gmail.com'
-        recipient = 'captainsos483@gmail.com'
-        subject = "EXAM REPORT FOR ", reg,  "Registration Number: ", reg, "\n Mathematics: 67 "
-        body = 'Kindly Receive the exam Report.'
-
-        # Set up the email message
-        message = MIMEMultipart()
-        message['From'] = sender
-        message['To'] = recipient
-        message['Subject'] = subject
-        message.attach(MIMEText(body, 'plain'))
-
-        # Send the email using Gmail's SMTP server
-        smtp_server = 'smtp.gmail.com'
-        smtp_port = 587
-        smtp_username = 'ogolasospeter62@gmail.com'
-        smtp_password = 'uovfyacgvntlemes'
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_username, smtp_password)
-            server.sendmail(sender, recipient, message.as_string())
-
-        # Show a success message
-        messagebox.showinfo('Success', 'Email sent successfully')
-
-    # except Exception as e:
-    #     # Show an error message
-    #     messagebox.showerror('Error', str(e))
 
 
     def RegisterStudent(self):
         self.master.withdraw()
-        self.studentmaster = tk.Tk()
+        self.studentmaster = Toplevel(self.root)
         self.studentmaster.deiconify()
         self.studentmaster.title("SkyLiners High School New Student Registration.")
         self.studentmaster.geometry("900x600+200+100")
@@ -215,8 +195,9 @@ class AdminDashboardPage:
         # Registration Number Entry and Label
         Reg_label = tk.Label(stdframe, text="Reg_Number")
         Reg_label.grid(row=1, column=0)
-        self.Reg_Entry = tk.Entry(stdframe, width=10)
+        self.Reg_Entry = tk.Entry(stdframe, width=10,state='disabled')
         self.Reg_Entry.grid(row=1, column=1)
+        self.Reg_Entry.bind(self.GetReg())
 
         # Name Entry and Label
         Name_label = tk.Label(stdframe, text="Name")
@@ -334,6 +315,27 @@ class AdminDashboardPage:
         ExitButton.grid(row=5, column=1,padx=20)
 
         self.studentmaster.mainloop()
+
+    def GetReg(self):
+        connectreg = pyodbc.connect(
+            r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\StudentData.accdb;')
+        cursor = connectreg.cursor()
+
+        cursor.execute('SELECT REG_NO FROM StudentData')
+        fetched_regs = cursor.fetchall()
+        reg = [row[0]for row in fetched_regs][-1]
+        # reg = fetched_regs[-1]
+        # print(reg)
+        reg1 = reg[0:3]
+        reg2 = reg[3::]
+        regg = int(reg2)
+        regg += 1
+        self.new_reg = str(reg1) + str(regg)
+        # print(self.new_reg)
+        self.Reg_Entry.config(state='normal')
+        self.Reg_Entry.delete(0,END)
+        self.Reg_Entry.insert(0,self.new_reg)
+        self.Reg_Entry.config(state='disabled')
     def ValidateEntries(self):
         self.validateContact(self.FatherContact_Entry.get())
         self.validateContact(self.MotherContact_Entry.get())
@@ -392,8 +394,8 @@ class AdminDashboardPage:
 
     def valid_email(self, mail):
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._]+\.[a-zA-Z]{2,}$'
-        valid = re.match(pattern, mail) is not None
-        if not valid:
+        self.valid = re.match(pattern, mail) is not None
+        if not self.valid:
             messagebox.showerror("Invalid email!", "Input the email in the correct format!!")
             if mail == self.MotherEmail_Entry.get():
                 messagebox.showerror("Mail Error","Input the Mother's Email Correctly.")
@@ -401,9 +403,6 @@ class AdminDashboardPage:
             elif mail == self.FatherEmail_Entry.get():
                 messagebox.showerror("Mail Error","Input the Father's Email Correctly.")
                 self.FatherEmail_Entry.focus()
-
-        else:
-            self.valid = messagebox.showinfo("Valid","No Errors")
 
     def validateContact(self, contact):
         if len(contact) != 10:
@@ -414,86 +413,7 @@ class AdminDashboardPage:
             elif contact == self.MotherContact_Entry.get():
                 messagebox.showerror("Contact Error","Input the Mother's Contact Correctly.")
                 self.MotherContact_Entry.focus()
-        else:
-            self.valid = messagebox.showinfo("Valid","No Errors")
-    # def InsertStudent(self):
-    #     reg = self.Reg_Entry.get()
-    #     name = self.Name_Entry.get()
-    #     feeD = self.Fee_Due_Entry.get()
-    #     feeP = self.Fee_Paid_Entry.get()
-    #     stream = self.Stream_Entry.get()
-    #     form = self.Form_Entry.get()
-    #     fathId = self.Father_id_Entry.get()
-    #     fathNm = self.FatherName_Entry.get()
-    #     fathCnt = self.FatherContact_Entry.get()
-    #     fathEm = self.FatherEmail_Entry.get()
-    #     mothId = self.Mother_id_Entry.get()
-    #     mothNm = self.MotherName_Entry.get()
-    #     mothCnt = self.MotherContact_Entry.get()
-    #     mothEm = self.MotherEmail_Entry.get()
-    #     county = self.stdCountyEntry.get()
-    #
-    #     # Establish a connection to the StudentData Access database
-    #     conn = pyodbc.connect(
-    #         r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\StudentData.accdb;')
-    #     # Create a cursor object
-    #     cursor = conn.cursor()
-    #
-    #     cursor.execute("SELECT REG_NO FROM StudentData")
-    #     fetched_reg = [row[0] for row in cursor.fetchall()]
-    #     #
-    #     # # Establish a connection to the StudentData Access database
-    #     # conn = pyodbc.connect(
-    #     #     r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\StreamData.accdb;')
-    #     # # Create a cursor object
-    #     # cursor = conn.cursor()
-    #
-    #     # cursor.execute("SELECT Stream FROM StreamData")
-    #     # fetched_stream = cursor.fetchall()
-    #     # random_stream = random.choice(fetched_stream)
-    #     # stream = random_stream
-    #
-    #     # Check if the registration number already exists
-    #     if reg not in fetched_reg:
-    #         if reg != "" and name != "" and stream != "" and form != "" and feeD != "" and feeP != "" and fathId != "" and fathNm != "" and fathEm != "" and fathCnt != "" and mothId != "" and mothNm != "" and mothCnt != "" and mothEm != "":
-    #             # Insert the new record
-    #             self.validateContact(self.FatherContact_Entry.get())
-    #             self.validateContact(self.MotherContact_Entry.get())
-    #             self.valid_email(self.MotherEmail_Entry.get())
-    #             self.valid_email(self.FatherEmail_Entry.get())
-    #
-    #             cursor.execute(
-    #                 f"INSERT INTO StudentData (REG_NO,  NAME, STREAM, FORM, FEES_DUE, FEES_PAID, FEES_BALANCE, FATHER_ID, FATHER_NAME, FATHER_CONTACT, FATHER_EMAIL, MOTHER_ID, MOTHER_NAME, MOTHER_CONTACT, MOTHER_EMAIL, COUNTY )  VALUES ('{reg}', '{name}', '{stream}', '{form}', '{feeD}', '{feeP}', '{self.fee_balance}', '{fathId}', '{fathNm}', '{fathCnt}', '{fathEm}', '{mothId}', '{mothNm}', '{mothCnt}', '{mothEm}', '{county}')")
-    #             # Commit the changes
-    #             conn.commit()
-    #             conn.close()
-    #             messagebox.showinfo("Success.", "Record Added Successfully!")
-    #             self.welcomemaster.deiconify()
-    #         else:
-    #             messagebox.showerror("Empty Fields","Kindly Fill All the Fields!!!")
-    #     else:
-    #         if reg == "" and name == "":
-    #             messagebox.showerror("Empty Entry", "Empty Entries!\n Kindly Fill All Fields.")
-    #         else:
-    #             messagebox.showerror("Duplicate Records!", "Registration Number " + reg + " already exists!!")
-    # def valid_email(self,mail):
-    #     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._]+\.[a-zA-Z]{2,}$'
-    #     valid = re.match(pattern,mail) is not None
-    #     if not valid:
-    #         messagebox.showerror("Invalid email!","Input the email in the correct format!!")
-    #         self.viewmaster.deiconify()
-    #         if mail == self.MotherEmail_Entry.get():
-    #             self.MotherEmail_Entry.focus()
-    #         elif mail == self.FatherEmail_Entry.get():
-    #             self.FatherEmail_Entry.focus()
-    # def validateContact(self,contact):
-    #     if len(contact) != 10:
-    #         messagebox.showerror("Invalid Contact!","Contact must be only 10 digits long!!")
-    #         self.viewmaster.deiconify()
-    #         if contact == self.FatherContact_Entry.get():
-    #             self.FatherContact_Entry.focus()
-    #         elif contact == self.MotherContact_Entry.get():
-    #             self.MotherContact_Entry.focus()
+
     def calculate_fee_balance(self):
         fee_due = float(self.Fee_Due_Entry.get())
         fee_paid = float(self.Fee_Paid_Entry.get())
@@ -504,49 +424,6 @@ class AdminDashboardPage:
         self.Fee_Balance_Entry.config(state='disabled')
         # except ValueError:
         #     messagebox.showwarning("Invalid Input!","Input Values Only!!")
-
-    def ViewTeachers(self):
-        # This method will show all the registered teachers in a new window
-        # This method will open a form for displaying all teachers
-        global col, i
-        self.masterTeacher = tk.Tk()
-        self.master.withdraw()
-        self.masterTeacher.deiconify()
-        self.masterTeacher.title("SkyLiners High School  Teachers Data.")
-        self.masterTeacher.geometry("1100x500+200+100")
-        self.masterTeacher.resizable(width=True,height=True)
-        self.masterTeacher.config(padx=60, pady=50)
-        frm1 = Frame(self.masterTeacher)
-        frm1.grid(row=0, column=0)
-
-        conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\StudentData.accdb;')
-        cursor = conn.cursor()
-
-        cursor.execute('SELECT * FROM TeachersData')
-        records = cursor.fetchall()
-
-        tree = ttk.Treeview(frm1)
-        tree["columns"] = tuple(range(len(records[0])))
-        tree["show"] = "headings"
-        # for i, col in enumerate(records[0]):
-        for i, col in enumerate(cursor.description):
-            tree.heading(i,text=col[0])
-
-        col_width = max(max(len(str(row[i])) for row in records), len(col[0])) * 5
-        for i, col in enumerate(records[0]):
-            tree.column(i,width=col_width,anchor="center")
-
-
-        for record in records:
-            tree.insert("","end",values=list(record))
-            # tree.insert("","end",values=record[0])
-
-        tree.grid(row=0,column=0)
-        ExitButton = Button(frm1, text="Exit", bg="Blue", fg="White", width=20, command=self.ExitTeacher)
-        ExitButton.grid(row=1, column=0, pady=10,padx=50)
-
-
-        self.masterTeacher.mainloop()
 
 
     def AddTeacher(self):
@@ -661,7 +538,7 @@ class AdminDashboardPage:
         # This method will show all the Student Reports in a new window
         # This method will open a form for displaying all Student Reports
         global col, i
-        self.masterTeacher = tk.Tk()
+        self.masterTeacher = Toplevel(self.master)
         self.master.withdraw()
         self.masterTeacher.deiconify()
         self.masterTeacher.title("SkyLiners High School  Student Exam Reports.")
