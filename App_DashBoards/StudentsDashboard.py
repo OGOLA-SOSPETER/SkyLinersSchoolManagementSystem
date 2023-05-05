@@ -3,7 +3,8 @@ from tkinter import *
 from tkinter import messagebox
 import pyodbc
 from datetime import datetime
-from Models import ReusableMethods
+
+
 class StudentsDashboardPage:
     # def __init__(self):
     def StudentDashBoard(self):

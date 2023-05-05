@@ -1,11 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
-from tkinter import ttk
 
-from App import ViewEditStudent
-from App import StudentsDashboard
-from App.AdminDashboard import AdminDashboardPage
+from App_DashBoards  import ViewEditStudent
+from App_DashBoards import StudentsDashboard
 
 import pyodbc
 

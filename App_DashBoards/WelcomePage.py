@@ -1,9 +1,6 @@
 from tkinter import *
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
-
-from PIL import ImageTk, Image
 
 from App.AdminDashboard import AdminDashboardPage
 from App.StudentsDashboard import StudentsDashboardPage

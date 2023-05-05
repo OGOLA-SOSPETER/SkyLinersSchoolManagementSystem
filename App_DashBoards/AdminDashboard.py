@@ -1,15 +1,13 @@
-from App import ViewEditStudent
+from App_DashBoards import ViewEditStudent
 import re
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import pyodbc
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from tkinter.ttk import Combobox
 from tkinter import messagebox
-from Models import ReusableMethods
+from Data_Models.Models import ReusableMethods
+
 
 # from ViewEditStudent import viewstud
 
@@ -150,12 +148,12 @@ class AdminDashboardPage:
     def ViewClassInfo(self):
         atitle = 'Class Information'
         aquery = 'SELECT REG_NO, NAME, STREAM, FORM FROM StudentData'
-        ReusableMethods.StudentInfo(self,atitle,aquery)
+        ReusableMethods.StudentInfo(self, atitle, aquery)
 
     def ViewArrearsInfo(self):
         atitle = 'Fee Payment and Arrears Info.'
         aquery = 'SELECT REG_NO, NAME, STREAM, FORM, FEES_PAID, FEES_BALANCE, FATHER_EMAIL, FATHER_CONTACT FROM StudentData'
-        ReusableMethods.StudentInfo(self,atitle,aquery)
+        ReusableMethods.StudentInfo(self, atitle, aquery)
 
     def ViewParentInfo(self):
         atitle = 'Parents\' Information'
