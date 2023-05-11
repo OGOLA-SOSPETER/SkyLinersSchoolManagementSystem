@@ -1,3 +1,6 @@
+from builtins import *
+
+import App_DashBoards.WelcomePage
 from App_DashBoards import ViewEditStudent
 import re
 import tkinter as tk
@@ -7,6 +10,8 @@ import pyodbc
 from tkinter.ttk import Combobox
 from tkinter import messagebox
 from Data_Models.Models import ReusableMethods
+from PIL import ImageTk, Image
+
 
 
 # from ViewEditStudent import viewstud
@@ -16,6 +21,7 @@ class AdminDashboardPage:
     # def __init__(self):
     #
     #
+
     def AdminLogin(self):
         self.root = tk.Tk()
         self.root.title("Administrator")
@@ -53,10 +59,23 @@ class AdminDashboardPage:
         ExitButton = tk.Button(self.root, text="Exit ", bg="blue", fg="white", width=20, command=self.Exit)
         ExitButton.grid(row=6, column=1, pady=10)
 
+        # canvas = Canvas(self.root, width=100, height=100)
+        # canvas.grid(row=7,column=1)
+        # img = PhotoImage(file="E:\Desktop\DATA\ppp.png")
+        # canvas.create_image(20, 20, anchor=S, image=img)
+        # canvas = Canvas(self.root, width=300, height=300)
+        # canvas.grid(row=7,column=1)
+        # img = ImageTk.PhotoImage(Image.open("E:/Desktop/DATA/ppp.png"))
+        # canvas.create_image(20, 20, anchor=NW, image=img)
+
         self.root.mainloop()
+
     def Exit(self):
-        exit()
-        self.master.deiconify()
+        self.root.withdraw()
+        from App_DashBoards.WelcomePage import WelcomePage
+        welcome_page = WelcomePage()
+        welcome_page.Page()
+
     def ValidateUser(self):
         self.username = self.UsernameEntry.get()
         password = self.Passwordentry.get()

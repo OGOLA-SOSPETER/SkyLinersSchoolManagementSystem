@@ -1,10 +1,9 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import messagebox
-
-from App.AdminDashboard import AdminDashboardPage
-from App.StudentsDashboard import StudentsDashboardPage
-from App.TeachersDashBoard import TeacherDashboardPage
+#
+# from App_DashBoards.StudentsDashboard import StudentsDashboardPage
+# from App_DashBoards.TeachersDashBoard import TeacherDashboardPage
 
 
 class WelcomePage:
@@ -45,20 +44,29 @@ class WelcomePage:
         admin_checkbox.grid(row=2, column=3)
 
         # Login Button
-        LoginButton = Button(User_option_Frame, text="Login", bg="blue", fg="white",width=20, command=self.selection)
-        LoginButton.grid(row = 3,column=1,pady=10)
-
+        Button(User_option_Frame, text="Login", bg="blue", fg="white",width=20, command=self.selection).grid(row = 3,column=1,pady=10)
         # Exit Button
-        ExitButton = Button(User_option_Frame, text="Exit App", bg="blue", fg="white", width=20, command=self.ExitApp)
-        ExitButton.grid(row=4, column=1,pady=10)
+        # Button(User_option_Frame, text="Refresh App", bg="blue", fg="white", width=20, command=self.RefreshApp).grid(row=4, column=1, pady=5)
+        # Exit Button
+        Button(User_option_Frame, text="Exit App", bg="blue", fg="white", width=20, command=self.ExitApp).grid(row=4, column=1,pady=5)
 
 
 
         self.welcomemaster.mainloop()
-    def ExitApp(self):
-        AdminDashboardPage.Exit(AdminDashboardPage())
-    def selection(self):
 
+    # def RefreshApp(self):
+    #     self.Page()
+
+    def ExitApp(self):
+        self.welcomemaster.destroy()
+        exit()
+        SystemExit()
+
+
+    def selection(self):
+        from App_DashBoards.AdminDashboard import AdminDashboardPage
+        from App_DashBoards.StudentsDashboard import StudentsDashboardPage
+        from App_DashBoards.TeachersDashBoard import TeacherDashboardPage
         if self.student_var.get() and self.teacher_var.get() and self.admin_var.get() or self.student_var.get() and self.admin_var.get() or self.student_var.get() and self.teacher_var.get() or self.teacher_var.get() and self.admin_var.get():
             messagebox.showerror("Multiple Selection!","Choose Only One Option!!!")
         elif self.student_var.get():

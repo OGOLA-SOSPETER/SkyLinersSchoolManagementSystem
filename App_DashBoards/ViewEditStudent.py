@@ -11,21 +11,27 @@ class ViewStudentDetails:
     def __init__(self):
         self.viewmaster = tk.Tk()
         self.viewmaster.title("SkyLiners High School Student Details")
-
     def ViewStudent(self):
-        self.viewmaster.geometry("900x600+200+100")
+        self.viewmaster.geometry("1000x600+200+100")
         self.viewmaster.config(padx=50, pady=5)
         self.viewmaster.resizable(True, True)
         main_frame = Frame(self.viewmaster)
         main_frame.grid(row=0, column=0)
-        lbl = Label(main_frame, text="Enter the Registration Number to View Student Details")
+
+        entry_frame = Frame(main_frame, borderwidth=2, relief=GROOVE, width=500, height=350, padx=50, pady=10)
+        entry_frame.grid(row=2, column=0, sticky=W + E,pady=10)
+
+
+
+        buttons_frame = Frame(main_frame, borderwidth=2, relief=GROOVE, width=500, height=350, padx=50, pady=10)
+        buttons_frame.grid(row=2, column=1, sticky=W + E,padx= 5,pady=5,ipadx=10,ipady=10)
+
+        lbl = Label(entry_frame, text="Enter the Registration Number to View Student Details")
         lbl.grid(row=0, column=0)
-        Reg_label = tk.Label(main_frame, text="Student Details.")
-        Reg_label.grid(row=1, column=0)
-
-        lbl1frame = Frame(main_frame, borderwidth=2, relief=GROOVE, width=500, height=350, padx=50, pady=10)
+        S_label = tk.Label(entry_frame, text="Student Details.")
+        S_label.grid(row=1, column=0)
+        lbl1frame = Frame(entry_frame, borderwidth=2, relief=GROOVE, width=500, height=350, padx=50, pady=10)
         lbl1frame.grid(row=2, column=0, sticky=W + E)
-
         # # Registration Number Entry and Label
         # Reg_label = tk.Label(lbl1frame, text="Reg_Number")
         # Reg_label.grid(row=1, column=0)
@@ -101,11 +107,11 @@ class ViewStudentDetails:
         self.stdCountyEntry.set("Select County")
         # self.stdCountyEntry.bind('<KeyRelease>', lambda event: self.ViewDetails())
 
-        prntlbl = Label(main_frame, text="Parents' Details.")
-        prntlbl.grid(row=3, column=0)
+        prntlbl = Label(entry_frame, text="Parents' Details.")
+        prntlbl.grid(row=4, column=0,padx=10)
 
-        parntframe = Frame(main_frame, borderwidth=2, relief=GROOVE, width=500, height=350, padx=50, pady=10)
-        parntframe.grid(row=4, column=0)
+        parntframe = Frame(entry_frame, borderwidth=2, relief=GROOVE, width=500, height=350, padx=50, pady=10)
+        parntframe.grid(row=5, column=0,padx=10)
 
         # Father's Details.
         # ID Number Entry and Label
@@ -169,24 +175,24 @@ class ViewStudentDetails:
         self.MotherEmail_Entry.grid(row=9, column=1)
         # self.MotherEmail_Entry.bind('<KeyRelease>', lambda event: self.ViewDetails())
 
-        ViewButton = Button(self.viewmaster, text="View Details", bg='blue', fg='white', command=self.ViewDetails,
+        ViewButton = Button(buttons_frame, text="View Details", bg='blue', fg='white', command=self.ViewDetails,
                             width=20)
-        ViewButton.grid(row=1, column=1)
+        ViewButton.grid(row=1, column=0,columnspan=2,pady=7)
 
-        RefreshButton = Button(self.viewmaster, text="Refresh", bg='green', fg='white', command=self.RefreshDetails,
+        RefreshButton = Button(buttons_frame, text="Refresh", bg='green', fg='white', command=self.RefreshDetails,
                                width=20)
-        RefreshButton.grid(row=2, column=1)
+        RefreshButton.grid(row=2, column=0,columnspan=2,pady=7)
 
-        EditButton = Button(self.viewmaster, text="Edit Details", bg='green', fg='white', command=self.EditDetails,
+        EditButton = Button(buttons_frame, text="Edit Details", bg='green', fg='white', command=self.EditDetails,
                             width=20)
-        EditButton.grid(row=3, column=1)
+        EditButton.grid(row=3, column=0,columnspan=2,pady=7)
 
-        CommitButton = Button(self.viewmaster, text="Commit Changes", bg='blue', fg='white', command=self.CommitUpdate,
+        CommitButton = Button(buttons_frame, text="Commit Changes", bg='blue', fg='white', command=self.CommitUpdate,
                               width=20)
-        CommitButton.grid(row=4, column=1)
+        CommitButton.grid(row=4, column=0,columnspan=2,pady=7)
 
-        ExitButton = Button(self.viewmaster, text="Exit", bg='red', fg='white', command=self.ExitView, width=20)
-        ExitButton.grid(row=5, column=1)
+        ExitButton = Button(buttons_frame, text="Exit", bg='red', fg='white', command=self.ExitView, width=20)
+        ExitButton.grid(row=5, column=0,columnspan=2,pady=7)
 
         self.viewmaster.mainloop()
     def calculate_fee_balance(self):
@@ -197,6 +203,7 @@ class ViewStudentDetails:
         self.Fee_Balance_Entry.delete(0, tk.END)
         self.Fee_Balance_Entry.insert(0, str(self.fee_balance))
         self.Fee_Balance_Entry.config(state='disabled')
+        fee_balance = self.fee_balance
     def RefreshDetails(self):
         self.EnableFields()
         self.DeleteEntries()
@@ -310,10 +317,13 @@ class ViewStudentDetails:
         self.Form_Entry.delete(0, END)
         self.Fee_Due_Entry.delete(0, END)
         self.Fee_Paid_Entry.delete(0, END)
+        self.Fee_Balance_Entry.config(state='normal')
         self.Fee_Balance_Entry.delete(0, END)
+        self.Fee_Balance_Entry.config(state='disabled')
         self.Father_id_Entry.delete(0, END)
         self.FatherName_Entry.delete(0, END)
         self.FatherContact_Entry.delete(0, END)
+
         self.FatherEmail_Entry.delete(0, END)
         self.Mother_id_Entry.delete(0, END)
         self.MotherName_Entry.delete(0, END)
@@ -367,6 +377,7 @@ class ViewStudentDetails:
         name = self.Name_Entry.get()
         feeD = self.Fee_Due_Entry.get()
         feeP = self.Fee_Paid_Entry.get()
+        fees_balance = self.Fee_Balance_Entry.get()
         stream = self.Stream_Entry.get()
         form = self.Form_Entry.get()
         fathId = self.Father_id_Entry.get()
@@ -378,7 +389,6 @@ class ViewStudentDetails:
         mothCnt = self.MotherContact_Entry.get()
         mothEm = self.MotherEmail_Entry.get()
         county = self.stdCountyEntry.get()
-
         if reg == "":
             messagebox.showwarning('Null Registration', 'Registration cannot be Empty!!')
         # Validate the input fields
@@ -418,7 +428,7 @@ class ViewStudentDetails:
                 # conn.close()
                 # Update the record
                 cursor.execute(
-                    f"UPDATE StudentData SET NAME='{name}', STREAM='{stream}', FORM='{form}', FEES_DUE='{feeD}', FEES_PAID='{feeP}', FEES_BALANCE='{self.fee_balance}', FATHER_ID='{fathId}', FATHER_NAME='{fathNm}', FATHER_CONTACT='{fathCnt}', FATHER_EMAIL='{fathEm}', MOTHER_ID='{mothId}', MOTHER_NAME='{mothNm}', MOTHER_CONTACT='{mothCnt}', MOTHER_EMAIL='{mothEm}', COUNTY='{county}' WHERE REG_NO='{reg}'"
+                    f"UPDATE StudentData SET NAME='{name}', STREAM='{stream}', FORM='{form}', FEES_DUE='{feeD}', FEES_PAID='{feeP}', FEES_BALANCE='{fees_balance}', FATHER_ID='{fathId}', FATHER_NAME='{fathNm}', FATHER_CONTACT='{fathCnt}', FATHER_EMAIL='{fathEm}', MOTHER_ID='{mothId}', MOTHER_NAME='{mothNm}', MOTHER_CONTACT='{mothCnt}', MOTHER_EMAIL='{mothEm}', COUNTY='{county}' WHERE REG_NO='{reg}'"
                 )
                 # Commit the changes
                 conn.commit()

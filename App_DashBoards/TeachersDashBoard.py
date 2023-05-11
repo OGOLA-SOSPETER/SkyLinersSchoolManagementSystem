@@ -5,6 +5,8 @@ from tkinter import *
 from App_DashBoards  import ViewEditStudent
 from App_DashBoards import StudentsDashboard
 
+
+
 import pyodbc
 
 class TeacherDashboardPage(StudentsDashboard.StudentsDashboardPage):
@@ -62,10 +64,10 @@ class TeacherDashboardPage(StudentsDashboard.StudentsDashboardPage):
             # Fetching the password for the given username
             cursor.execute(f"select Password from TeacherLogin WHERE Username = '{username}'")
             fetched_password = cursor.fetchone()
-            cursor.execute("select  Username from TeacherLogin ")
-            fetched_users = cursor.fetchall()
+            cursor.execute("select  Username from TeacherLogin WHERE Password = ?",fetched_password[0])
+            fetched_user = cursor.fetchone()
             if fetched_password:
-                if fetched_password[0] == password:
+                if fetched_password[0] == password and fetched_user[0] == username:
                     messagebox.showinfo("Login Success", "Login Successful")
                     self.ClearLoginFields()
                     self.teachermaster.withdraw()
@@ -75,9 +77,11 @@ class TeacherDashboardPage(StudentsDashboard.StudentsDashboardPage):
                     if errorcount >= 3:
                         messagebox.showwarning("Access Failure!",
                                                "You have exceeded the attempts.\nTry again after 30 minutes.")
+
                     else:
-                        messagebox.showerror("Login Error", "Invalid Password")
+                        messagebox.showerror("Login Error", "Invalid UserName or Password.")
                         self.ClearLoginFields()
+                        self.UsernameEntry.focus_get()
 
             else:
                 # messagebox.showerror("Login Error", "Username Not Found")
@@ -90,7 +94,7 @@ class TeacherDashboardPage(StudentsDashboard.StudentsDashboardPage):
     def TeacherDashBoard(self):
         self.dashmaster = tk.Tk()
         self.dashmaster.title(" Teachers  Main DashBoard")
-        self.dashmaster.geometry("800x500+210+100")
+        self.dashmaster.geometry("600x400+200+150")
         self.dashmaster.deiconify()
         self.dashmaster.config(padx=100, pady=50)
 
@@ -98,21 +102,18 @@ class TeacherDashboardPage(StudentsDashboard.StudentsDashboardPage):
         eventsframe = Frame(self.dashmaster)
         eventsframe.grid(row=0, column=1)
 
-        UpdateButton = Button(eventsframe, text="Manage Student Info",bg='blue',fg='white', width=20, command=self.ViewRecords)
-        UpdateButton.grid(row=1, column=0,pady =5,padx=10)
+        Button(eventsframe, text="Manage Student Info",bg='blue',fg='white', width=20, command=self.ViewRecords).grid(row=1, column=0,pady =5,padx=7)
+        Button(eventsframe, text="Manage Exam Records",bg='blue',fg='white', width=20, command=self.Records).grid(row=1, column=1,pady =5,padx=7)
+        Button(eventsframe, text="View Notifications", bg='blue', fg='white', width=20,command=self.SendMessage).grid(row=2, column=0,pady =5,padx=7)
+        Button(eventsframe, text="Add Message(s)", bg='blue', fg='white', width=20).grid(row=2, column=1, pady=5, padx=7)
+        Button(eventsframe, text="Exit", width=20,bg='blue',fg='white', command=self.Home).grid(row=3, column=0,pady =5,padx=7)
 
-        DisplayRecordsButton = Button(eventsframe, text="Manage Exam Records",bg='blue',fg='white', width=20, command=self.Records)
-        DisplayRecordsButton.grid(row=1, column=1,pady =5,padx=10)
-
-        EditRecordsButton = Button(eventsframe, text="Edit Records", bg='blue', fg='white', width=20,command=self.UpdateRecords)
-        EditRecordsButton.grid(row=2, column=0,pady =5,padx=10)
-
-
-        ExitButton = Button(eventsframe, text="Exit", width=20,bg='blue',fg='white', command=self.Home)
-        ExitButton.grid(row=2, column=1,pady =5,padx=10)
 
 
         self.dashmaster.mainloop()
+
+
+
     def ExamInfo(self):
         teacherframe = Frame(self.dashmaster)
         teacherframe.grid(row=0, column=0)
@@ -216,6 +217,7 @@ class TeacherDashboardPage(StudentsDashboard.StudentsDashboardPage):
         viewst.ViewStudent()
     def Home(self):
         self.dashmaster.withdraw()
+        # self.dashmaster.destroy()
         self.teachermaster.deiconify()
     def UpdateRecords(self):
         self.reg = self.Reg_Entry.get()

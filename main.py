@@ -1,4 +1,4 @@
-from App.WelcomePage import WelcomePage
+from App_DashBoards.WelcomePage import WelcomePage
 
 if __name__ == '__main__':
 

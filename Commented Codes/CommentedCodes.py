@@ -231,3 +231,151 @@
 #
 #
 #     self.teachermaster.mainloop()
+
+#
+# import bcrypt
+# from bcrypt import hashpw
+#
+#
+# def hash_password(password: str) -> bytes:
+#     """
+#     Returns a hashed password
+#     Args:
+#         password (str): password to be hashed
+#     """
+#     b = password.encode()
+#     hashed = hashpw(b, bcrypt.gensalt())
+#     return hashed
+#
+#
+# def is_valid(hashed_password: bytes, password: str) -> bool:
+#     """
+#     Check whether a password is valid
+#     Args:
+#         hashed_password (bytes): hashed password
+#         password (str): password in string
+#     Return:
+#         bool
+#     """
+#     return bcrypt.checkpw(password.encode(), hashed_password)
+
+# !/usr/bin/env python3
+"""
+Defines a hash_password function to return a hashed password
+"""
+from tkinter import messagebox
+
+import bcrypt
+from bcrypt import hashpw
+
+password = "sunday"
+# def hash_password(password: str) -> bytes:
+#     """
+#     Returns a hashed password
+#     Args:
+#         password (str): password to be hashed
+#     """
+#     b = password.encode()
+#     hashed = hashpw(b, bcrypt.gensalt())
+#     messagebox.showinfo('Hashed',f'HASHED Password:{hashed}')
+#     return hashed
+#
+#
+#
+# def is_valid(hashed_password: bytes, password: str) -> bool:
+#     """
+#     Check whether a password is valid
+#     Args:
+#         hashed_password (bytes): hashed password
+#         password (str): password in string
+#     Return:
+#         bool
+#     """
+#     return bcrypt.checkpw(password.encode(), hashed_password)
+#
+# hash_password('Sunday')
+# is_valid(hash_password('Sunday'),'Sunday')
+
+
+# def SendMessage(self):
+#     reg = self.Reg_Entry.get()
+#     if reg != "":
+#         account_sid = 'AC16643eb157305aed5a50dcfefd0c4ecf'
+#         auth_token = '3e71fd4a0d520f8e4b3e26a504b92ac0'
+#
+#         client = Client(account_sid, auth_token)
+#         conn = pyodbc.connect(
+#             r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=J:\My Drive\SkyLinersSchoolManagementSystem\DataBases\StudentData.accdb;')
+#         # Create a cursor object
+#         cursor = conn.cursor()
+#         cursor.execute(f"SELECT FATHER_NAME FROM StudentData WHERE REG_NO = '{reg}' ")
+#         fath = cursor.fetchone()
+#
+#         cursor.execute(f"SELECT REG_NO, MATHS, ENGLISH, KISWAHILI, BIOLOGY, CHEMISTRY, PHYSICS, GEOGRAPHY, HISTORY, CRE, COMPUTER_STUDIES, TOTAL, AVERAGE, GRADE,COMMENT FROM ExamRecords WHERE REG_NO='{self.reg}'")
+#         rows = cursor.fetchone()
+#         msg = f"\n\nSKYLINE HIGH SCHOOL STUDENT RESULTS\n" \
+#               f"Greetings, Mr. {fath[0]}. This is your Son's {rows[0]} performance.\n" \
+#               f"Maths: {rows[1]}\nEnglish: {rows[2]}\nKiswahili: {rows[3]}\n" \
+#               f"Biology: {rows[4]}\nChemistry: {rows[5]}.\n" \
+#               f"Physics: {rows[6]}.\nGeography: {rows[7]}\nHistory: {rows[8]}\nCRE: {rows[9]}\n" \
+#               f"Computer Studies: {rows[10]}\n\nTOTAL: {rows[11]}\nAVERAGE SCORE: {rows[12]}\nGRADE: {rows[13]}" \
+#               f"Class Teacher's Comment: {rows[14]}"
+#         message = client.messages.create(
+#             body=msg,
+#             from_='+12545664699',
+#             to='+254 795 398253'
+#         )
+#         if message:
+#             messagebox.showinfo('Success.','Message Sent Successfully.')
+#         print(message.sid)
+#     messagebox.showerror('Null Registration',"Enter the Registration Number!!")
+
+# def SendEmail(self):
+#     sender_email = 'your_sender_email@example.com'
+#     receiver_email = 'your_receiver_email@example.com'
+#     subject = 'Test Email'
+#     message = 'This is a test email.'
+#
+#     self.send_email(sender_email, receiver_email, subject, message)
+# sg_api_key = 'YOUR_SENDGRID_API_KEY'
+#
+# def send_email(sender_email, receiver_email, subject, message):
+#     message = Mail(
+#         from_email=sender_email,
+#         to_emails=receiver_email,
+#         subject=subject,
+#         plain_text_content=message)
+#
+#     try:
+#         sendgrid_client = SendGridAPIClient(sg_api_key)
+#         response = sendgrid_client.send(message)
+#         print('Email sent successfully')
+#     except Exception as e:
+#         print('Email sending failed')
+#         print(str(e))
+
+#.......................sending mails..................
+# Set up your SendGrid API key
+# sg_api_key = os.environ.get('SENDGRID_API_KEY')
+#
+# # Create a Mail object
+# message = Mail(
+#     from_email='sender@example.com',
+#     to_emails='recipient@example.com',
+#     subject='Example Email',
+#     plain_text_content='This is the plain text content of the email.'
+# )
+#
+# # Create an instance of the SendGridAPIClient
+# sg_client = SendGridAPIClient(api_key=sg_api_key)
+#
+# # Send the email using the SendGridAPIClient
+# response = sg_client.send(message)
+#
+# # Check the response status code
+# if response.status_code == 202:
+#     print('Email sent successfully')
+# else:
+#     print('Email sending failed')
+#     print(response.body)
+

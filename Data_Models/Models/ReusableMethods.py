@@ -5,10 +5,38 @@ from email.mime.text import MIMEText
 from tkinter import *
 from tkinter.ttk import Combobox
 
+import bcrypt
 import pyodbc
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+
+def hash_password(password: str) -> bytes:
+    """
+    Returns a hashed password
+    Args:
+        password (str): password to be hashed
+    """
+    b = password.encode()
+    hashed = bcrypt.hashpw(b, bcrypt.gensalt())
+    # messagebox.showinfo('Hashed',f'HASHED Password:{hashed}')
+    return hashed
+
+
+
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    """
+    Check whether a password is valid
+    Args:
+        hashed_password (bytes): hashed password
+        password (str): password in string
+    Return:
+        bool
+    """
+    return bcrypt.checkpw(password.encode(), hashed_password)
+
+hash_password('Sunday')
+is_valid(hash_password('Sunday'),'Sunday')
 
 def ClearLoginFields(self):
     self.UsernameEntry.delete(0, 'end')
@@ -23,7 +51,7 @@ def StudentInfo(self, title, query):
     aquery = query
     global col, i
     self.masterTeacher = tk.Tk()
-    self.master.withdraw()
+    # self.master.withdraw()
     self.masterTeacher.deiconify()
     self.masterTeacher.title(f"SkyLiners High School {toptitle}")
     self.masterTeacher.geometry("1100x500+200+100")
@@ -47,17 +75,17 @@ def StudentInfo(self, title, query):
     for i, col in enumerate(cursor.description):
         tree.heading(i, text=col[0])
 
-    # col_width = min(max(len(str(row[i])) for row in class_records), len(col[0])) * 10
-    # for i, col in enumerate(class_records[0]):
-    #     tree.column(i, width=col_width, anchor="center")
-
+    col_width = min(max(len(str(row[i])) for row in class_records), len(col[0])) * 5
     for i, col in enumerate(class_records[0]):
-        # Get the maximum length of the content in the column
-        max_length = max(len(str(row[i])) for row in class_records)
-        # Set the column width based on the maximum content length
-        col_width = max_length * 7
-        # Set the column width and alignment
         tree.column(i, width=col_width, anchor="center")
+
+    # for i, col in enumerate(class_records[0]):
+    #     # Get the maximum length of the content in the column
+    #     max_length = min(len(str(cursor.description[i])) for row in class_records)
+    #     # Set the column width based on the maximum content length
+    #     col_width = max_length * 5
+    #     # Set the column width and alignment
+    #     tree.column(i, width=col_width, anchor="center")
 
     # col_width = lambda i: max(len(str(row[i])) for row in class_records) * 10
     # [tree.column(i, width=min(col_width(i), len(str(col)) * 10), anchor="center") for i, col in
