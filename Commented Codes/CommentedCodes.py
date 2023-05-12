@@ -300,8 +300,7 @@ password = "sunday"
 # def SendMessage(self):
 #     reg = self.Reg_Entry.get()
 #     if reg != "":
-#         account_sid = 'AC16643eb157305aed5a50dcfefd0c4ecf'
-#         auth_token = '3e71fd4a0d520f8e4b3e26a504b92ac0'
+#
 #
 #         client = Client(account_sid, auth_token)
 #         conn = pyodbc.connect(
